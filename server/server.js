@@ -236,6 +236,10 @@ io.on("connection", (socket) => {
 
 /* broadcasting the server api on the network (using the broadcast api i.e, 0.0.0.0) and port 3001
  for players to access and join the game */
+server.get("/", (req, res) => {
+  res.send("API is working ");
+});
+
 server.listen(3001, "0.0.0.0", () => {
   console.log(`Listening at port ${process.env.PORT || "3001"}`);
 });
