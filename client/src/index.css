@@ -1,0 +1,16 @@
+@import "tailwindcss";
+body {
+  background-color: #1c1d1f;
+  font-family: "Mansalva", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.hidden {
+  display: none;
+}
