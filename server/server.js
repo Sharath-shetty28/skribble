@@ -16,6 +16,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "https://skribble-nu.vercel.app",
+    transports: ["polling"],
     methods: ["GET", "POST"],
   },
 });
