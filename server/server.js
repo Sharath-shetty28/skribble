@@ -15,7 +15,7 @@ const server = http.createServer(app);
 // change the cors origin to the domain or url of the client.
 const io = new Server(server, {
   cors: {
-    origin: "https://skribble-nu.vercel.app",
+    origin: "https://skribble-nu.vercel.app/",
     methods: ["GET", "POST"],
   },
 });
