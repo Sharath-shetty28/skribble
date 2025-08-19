@@ -2,7 +2,11 @@ import { createContext, useState } from "react";
 
 import { io } from "socket.io-client";
 
-const socket = io.connect("https://skribble-backend.vercel.app/");
+// const socket = io.connect("https://skribble-backend.vercel.app/");
+
+const socket = io("https://skribble-backend.vercel.app", {
+  transports: ["polling"], // here you force polling
+});
 
 export const GameContext = createContext({
   username: "",

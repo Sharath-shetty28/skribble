@@ -16,10 +16,18 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "https://skribble-nu.vercel.app",
-    transports: ["polling"],
     methods: ["GET", "POST"],
   },
 });
+
+
+
+import { io } from "socket.io-client";
+
+const socket = io("https://your-backend.vercel.app", {
+  transports: ["polling"], // here you force polling
+});
+
 
 //connecting to sockts.
 io.on("connection", (socket) => {
