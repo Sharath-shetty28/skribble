@@ -3,8 +3,8 @@ import { createContext, useState } from "react";
 import { io } from "socket.io-client";
 
 // const socket = io.connect("https://skribble-backend.vercel.app");
- const socket = io("https://skribble-backend.vercel.app", {
-  transports: ["websocket"] // force websocket
+const socket = io("https://skribble-vv2w.onrender.com", {
+  transports: ["websocket"], // force websocket
 });
 
 export const GameContext = createContext({
