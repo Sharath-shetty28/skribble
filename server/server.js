@@ -15,19 +15,10 @@ const server = http.createServer(app);
 // change the cors origin to the domain or url of the client.
 const io = new Server(server, {
   cors: {
-    origin: "https://skribble-nu.vercel.app",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
-
-
-
-import { io } from "socket.io-client";
-
-const socket = io("https://your-backend.vercel.app", {
-  transports: ["polling"], // here you force polling
-});
-
 
 //connecting to sockts.
 io.on("connection", (socket) => {
