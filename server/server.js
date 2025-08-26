@@ -7,6 +7,8 @@ const Game = require("./config/game");
 const Player = require("./config/player");
 
 const game = new Game();
+// shared timer reference for the running turn timer
+let timer;
 app.use(express.json());
 
 app.use(cors());
@@ -70,7 +72,7 @@ io.on("connection", (socket) => {
   const startTimer = () => {
     timer = setInterval(() => {
       //if players are less than 2 then clear the interval.
-      if (game.getPlayers() < 2) {
+      if (game.getPlayers().length < 2) {
         clearInterval(timer);
       }
       //sending the time to client after each second i.e, 1000ms.
@@ -207,29 +209,56 @@ io.on("connection", (socket) => {
     startTimer();
   });
   // Runs when the a player disconnects from the game.
+  // socket.on("disconnect", () => {
+  //   // printing out which socket has disconnected.
+  //   console.log(`a user has disconnected: ${socket.id}`);
+  //   // finding the player who has disconnected using their id (which is also the socket id).
+  //   const disconnectedPlayer = game
+  //     .getPlayers()
+  //     .find((player) => player.id === socket.id).username;
+
+  //   // if the disconnected player is in the player list tell everyone else that he has left.
+  //   if (disconnectedPlayer) {
+  //     socket.broadcast.emit("receive_message", {
+  //       username: "server",
+  //       message: `${disconnectedPlayer} has left the game`,
+  //       color: "red",
+  //     });
+  //   }
+  //   //remove the player from the playersList in the game state.
+  //   game.removePlayer(socket.id);
+  //   // tell other players to remove him as well.
+  //   socket.broadcast.emit("remove_player", game.playersList);
+  //   // if player count is less than 2 then stop and reset the game as it cannot continue.
+  //   if (game.playersList.length < 2 && game.isStarted) {
+  //     game.reset();
+  //     clearInterval(timer);
+  //   }
+  // });
   socket.on("disconnect", () => {
-    // printing out which socket has disconnected.
     console.log(`a user has disconnected: ${socket.id}`);
-    // finding the player who has disconnected using their id (which is also the socket id).
-    const disconnectedPlayer = game
-      .getPlayers()
-      .find((player) => player.id === socket.id).username;
-    // if the disconnected player is in the player list tell everyone else that he has left.
-    if (disconnectedPlayer) {
+
+    const playerObj = game.getPlayers().find((p) => p.id === socket.id);
+
+    if (playerObj) {
+      const disconnectedPlayer = playerObj.username;
+
       socket.broadcast.emit("receive_message", {
         username: "server",
         message: `${disconnectedPlayer} has left the game`,
         color: "red",
       });
-    }
-    //remove the player from the playersList in the game state.
-    game.removePlayer(socket.id);
-    // tell other players to remove him as well.
-    socket.broadcast.emit("remove_player", game.playersList);
-    // if player count is less than 2 then stop and reset the game as it cannot continue.
-    if (game.playersList.length < 2 && game.isStarted) {
-      game.reset();
-      clearInterval(timer);
+
+      // Remove from game state
+      game.removePlayer(socket.id);
+      socket.broadcast.emit("remove_player", game.playersList);
+
+      if (game.playersList.length < 2 && game.isStarted) {
+        game.reset();
+        clearInterval(timer);
+      }
+    } else {
+      console.warn(`Player with id ${socket.id} not found in game state`);
     }
   });
 });

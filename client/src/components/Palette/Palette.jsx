@@ -69,7 +69,6 @@ export default function Palette() {
             >
               Large (15px)
             </div>
-            {/* Add more sizes as needed */}
           </div>
         )}
       </div>

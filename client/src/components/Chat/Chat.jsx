@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import "./chat.styles.css";
 import { GameContext } from "../../contexts/GameContext";
-import ScrollToBottom from "react-scroll-to-bottom"
+import ScrollToBottom from "react-scroll-to-bottom";
 
 export default function Chat() {
   const { messagesArray, sendMessage } = useContext(GameContext);
@@ -10,7 +10,7 @@ export default function Chat() {
     <div className="chat">
       <ScrollToBottom className="chat-body">
         {messagesArray.map(({ username, message, color }, i) => (
-          <div className={i%2===0?"message-odd":""} key={i} >
+          <div className={i % 2 === 0 ? "message-odd" : ""} key={i}>
             <span
               className={`username ${username === "server" ? "hidden" : ""}`}
             >{`${username}: `}</span>
@@ -22,12 +22,13 @@ export default function Chat() {
         className="chat-footer"
         onSubmit={(e) => {
           e.preventDefault();
-          e.target.reset();
+          if (!message.trim()) return;
           sendMessage(message);
+          setMessage("");
         }}
       >
         <label>Guess:</label>
-        <input onChange={(e) => setMessage(e.target.value)} type="text" />
+        <input value={message} onChange={(e) => setMessage(e.target.value)} type="text"  required/>
         <button className="send-button" type="submit">
           Send
         </button>
