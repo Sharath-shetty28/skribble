@@ -174,12 +174,31 @@ io.on("connection", (socket) => {
     }
   });
   // chooser (player who is assigned the choosing role by the server) asking the server for words.
+  // socket.on("give_words", () => {
+  //   //using chooseThreeWords() method from the game object to get three random words from the words list.
+  //   const threeWords = game.chooseThreeWords();
+  //   // giving the words to the chooser.
+  //   socket.emit("receive_words", threeWords);
+  // });
+
+  // chooser (player who is assigned the choosing role by the server) asking the server for words.
   socket.on("give_words", () => {
-    //using chooseThreeWords() method from the game object to get three random words from the words list.
     const threeWords = game.chooseThreeWords();
-    // giving the words to the chooser.
+
+    // mark this player as choosing in game state
+    const chooser = game.getPlayers().find((p) => p.id === socket.id);
+    chooser.isChoosing = true;
+
+    // giving the words to the chooser only
     socket.emit("receive_words", threeWords);
+
+    // tell everyone else who is choosing (blocking overlay)
+    socket.broadcast.emit("player_is_choosing", {
+      choosingUserId: socket.id,
+      username: chooser.username,
+    });
   });
+
   // chooser sending back his choice from the three words.
   socket.on("send_choice", ({ choice, screenWidth, screenHeight }) => {
     // assigning drawing role to the chooser and taking back his choosing role.
@@ -209,32 +228,6 @@ io.on("connection", (socket) => {
     startTimer();
   });
   // Runs when the a player disconnects from the game.
-  // socket.on("disconnect", () => {
-  //   // printing out which socket has disconnected.
-  //   console.log(`a user has disconnected: ${socket.id}`);
-  //   // finding the player who has disconnected using their id (which is also the socket id).
-  //   const disconnectedPlayer = game
-  //     .getPlayers()
-  //     .find((player) => player.id === socket.id).username;
-
-  //   // if the disconnected player is in the player list tell everyone else that he has left.
-  //   if (disconnectedPlayer) {
-  //     socket.broadcast.emit("receive_message", {
-  //       username: "server",
-  //       message: `${disconnectedPlayer} has left the game`,
-  //       color: "red",
-  //     });
-  //   }
-  //   //remove the player from the playersList in the game state.
-  //   game.removePlayer(socket.id);
-  //   // tell other players to remove him as well.
-  //   socket.broadcast.emit("remove_player", game.playersList);
-  //   // if player count is less than 2 then stop and reset the game as it cannot continue.
-  //   if (game.playersList.length < 2 && game.isStarted) {
-  //     game.reset();
-  //     clearInterval(timer);
-  //   }
-  // });
   socket.on("disconnect", () => {
     console.log(`a user has disconnected: ${socket.id}`);
 

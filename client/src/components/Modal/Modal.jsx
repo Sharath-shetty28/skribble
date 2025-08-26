@@ -17,19 +17,28 @@ export default function Modal() {
     isGameOver,
   } = useContext(GameContext);
   const [sortedPlayers, setSortedPlayers] = useState([]);
-  useEffect(()=>{
-    setSortedPlayers(playersList.sort((a,b)=> b.score - a.score))
-  }, [playersList])
+
+  useEffect(() => {
+    setSortedPlayers([...playersList].sort((a, b) => b.score - a.score));
+  }, [playersList]);
+
   const sendChoice = (e) => {
+    const choice = e.target.value;
+    if (!choice) return;
     setIsChoosing(false);
     setIsAllowedToDraw(true);
-    setCorrectWord(e.target.value);
-    socket.emit("send_choice", {choice: e.target.value, screenWidth: window.innerWidth, screenHeight: window.innerHeight});
+    setCorrectWord(choice);
+
+    socket.emit("send_choice", {
+      choice,
+      screenWidth: window.innerWidth,
+      screenHeight: window.innerHeight,
+    });
   };
 
   return (
     <div className="modal-container">
-      {isChoosing ? (
+      {isChoosing && (
         <div className="choose-words">
           Choose One of the 3 Words{" "}
           <div className="choices">
@@ -40,18 +49,16 @@ export default function Modal() {
             ))}
           </div>
         </div>
-      ) : (
-        ""
       )}
-      {playersList.length < 2 ? (
+
+      {playersList.length < 2 && (
         <div className="waiting">
           <div>Waiting for other players to join</div>
           <img src={loading} alt="loading" />
         </div>
-      ) : (
-        ""
       )}
-      {isTurnOver ? (
+
+      {isTurnOver && (
         <div>
           The correct word was "{correctWord}"
           {sortedPlayers.map((player) => (
@@ -60,21 +67,22 @@ export default function Modal() {
             </div>
           ))}
         </div>
-      ) : (
-        ""
       )}
-      {isGameOver ? (
+      {isGameOver && (
         <div>
           Game has Ended <br />
-          {`${playersList.sort((a,b)=> b.score - a.score)[0].username} has won`} <br />
-          {playersList.sort((p1,p2)=>p2.score - p1.score).map((player) => (
-            <div key={player.id}>
-              {player.username} {player.score}
-            </div>
-          ))}
+          {`${
+            playersList.sort((a, b) => b.score - a.score)[0].username
+          } has won`}{" "}
+          <br />
+          {playersList
+            .sort((p1, p2) => p2.score - p1.score)
+            .map((player) => (
+              <div key={player.id}>
+                {player.username} {player.score}
+              </div>
+            ))}
         </div>
-      ) : (
-        ""
       )}
     </div>
   );
