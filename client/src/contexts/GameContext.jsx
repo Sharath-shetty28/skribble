@@ -2,7 +2,10 @@ import { createContext, useState } from "react";
 
 import { io } from "socket.io-client";
 
-const socket = io.connect("https://skribble-backend.vercel.app");
+// const socket = io.connect("https://skribble-backend.vercel.app");
+ const socket = io("https://your-backend-url.com", {
+  transports: ["websocket"] // force websocket
+});
 
 // const socket = io("http://localhost:3001", {
 //   transports: ["polling"], // here you force polling

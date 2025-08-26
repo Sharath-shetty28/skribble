@@ -11,13 +11,16 @@ const game = new Game();
 let timer;
 app.use(express.json());
 
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173", "https://your-frontend.vercel.app"]
+}));
 //creating http server.
 const server = http.createServer(app);
 // change the cors origin to the domain or url of the client.
 const io = new Server(server, {
   cors: {
-    origin: "https://skribble-nu.vercel.app",
+    origin: ["http://localhost:5173", "https://your-frontend.vercel.app"],
     methods: ["GET", "POST"],
   },
 });
