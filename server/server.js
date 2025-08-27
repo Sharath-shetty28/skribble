@@ -12,15 +12,17 @@ let timer;
 app.use(express.json());
 
 // app.use(cors());
-app.use(cors({
-  origin: ["http://localhost:5173", "https://your-frontend.vercel.app"]
-}));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://skribble-nu.vercel.app"],
+  })
+);
 //creating http server.
 const server = http.createServer(app);
 // change the cors origin to the domain or url of the client.
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://your-frontend.vercel.app"],
+    origin: ["http://localhost:5173", "https://skribble-nu.vercel.app"],
     methods: ["GET", "POST"],
   },
 });
@@ -177,29 +179,11 @@ io.on("connection", (socket) => {
     }
   });
   // chooser (player who is assigned the choosing role by the server) asking the server for words.
-  // socket.on("give_words", () => {
-  //   //using chooseThreeWords() method from the game object to get three random words from the words list.
-  //   const threeWords = game.chooseThreeWords();
-  //   // giving the words to the chooser.
-  //   socket.emit("receive_words", threeWords);
-  // });
-
-  // chooser (player who is assigned the choosing role by the server) asking the server for words.
   socket.on("give_words", () => {
+    //using chooseThreeWords() method from the game object to get three random words from the words list.
     const threeWords = game.chooseThreeWords();
-
-    // mark this player as choosing in game state
-    const chooser = game.getPlayers().find((p) => p.id === socket.id);
-    chooser.isChoosing = true;
-
-    // giving the words to the chooser only
+    // giving the words to the chooser.
     socket.emit("receive_words", threeWords);
-
-    // tell everyone else who is choosing (blocking overlay)
-    socket.broadcast.emit("player_is_choosing", {
-      choosingUserId: socket.id,
-      username: chooser.username,
-    });
   });
 
   // chooser sending back his choice from the three words.
