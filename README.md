@@ -38,15 +38,16 @@ Built with **React, Node.js, and Socket.IO**, this project allows players to joi
    npm install
    cd ../server
    npm install
-3.Start the backend server
+   ```
+   3.Start the backend server
    ```
    npm run dev
-```
-4.Start the frontend
+   ```
+   4.Start the frontend
    ```
     cd client
     npm start
-```
+   ```
 
 
 🎯 Future Improvements
