@@ -54,4 +54,3 @@ Built with **React, Node.js, and Socket.IO**, this project allows players to joi
 - ✅ Add authentication for persistent player profiles
 - ✅ Add leaderboard and scoring system
 - ✅ Support for mobile-friendly gameplay
-- ✅ Dockerize app for easy deployment
